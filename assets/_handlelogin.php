@@ -7,8 +7,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     $checksql="SELECT * FROM `users` where `useremail`='$email'";
     $result=mysqli_query($conn,$checksql);
     $num=mysqli_num_rows($result);
-    echo $num;
+    // echo $num;
     if($num==1){
+        if($pass==""){
+            header("location: /secrethost/index.php/?login=wpass");
+            exit;
+        }
+
         $row=mysqli_fetch_assoc($result);
         if($pass==password_verify($pass,$row['password'])){
             session_start();
@@ -16,16 +21,21 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             $email=str_replace(">","&gt;",$email);
             $_SESSION['loggedin']=true;
             $_SESSION['email']=$email;
+            $_SESSION['id']=$row['id'];
             $login="true";
             //! if login=true, redirect to index with user id same as userid in mysql database;
-            header("location: /secret/index.php?&userid=".$row['id']);
+            header("location: /secrethost/index.php?login=".$login."&userid=".$row['userid']);
             exit();
         }
-        else
-        $login="wpass";
+        else{
+            header("location: /secrethost/index.php/?login=wpass");  
+        }
     }
-    else
-    $login="wemail";
+    else{
+        header("location: /secrethost/index.php/?login=wemail");
+    }
 }
 
-header("location: /secret/index.php?login=".$login."&userid=".$row['id']);
+
+?>
+

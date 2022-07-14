@@ -1,5 +1,10 @@
 <?php
 
+$user=rand(1,100);
+$str=password_hash($user,PASSWORD_DEFAULT);
+$rand=substr($str,10,6);
+
+
 //! if any user sign up, he send a post request and then we take the email, password and confirm password via post super variable and handle signup page which I use my to send post request;
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -10,7 +15,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
     $sql="Select * from `users`";
     $result=mysqli_query($conn,$sql);
-    $row=mysqli_num_rows($result)+1;
+    // $row=mysqli_num_rows($result)+1;
 
     $existsql="SELECT * FROM `users` where `useremail`='$email'";
     $existRes=mysqli_query($conn,$existsql);
@@ -19,9 +24,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         $signup="exist";
     }
     else{
-        if($pass==$cpass){
+        if($pass==""){
+            header("location: /secrethost/index.php/?signup=notmatch");
+            exit;
+        }
+        else if($pass==$cpass){
             $hash=password_hash($pass,PASSWORD_DEFAULT);
-            $sql="INSERT INTO `users` (`useremail`, `password`, `created`) VALUES ('$email', '$hash', current_timestamp())";
+            $sql="INSERT INTO `users` (`userid`,`useremail`, `password`, `created`) VALUES ('$rand','$email', '$hash', current_timestamp())";
             $result=mysqli_query($conn,$sql);
             $signup="true";
         }
@@ -31,7 +40,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 
 //! redirecting to index.php, attaching "signup" and "userid" in address bar with a value of total number of columns in mysql database+1, so that GET request can be accessed;
 
-header("location: /secret/index.php/?signup=".$signup."&userid=".$row);
+header("location: /secrethost/index.php/?signup=".$signup);
 }
 
 ?>

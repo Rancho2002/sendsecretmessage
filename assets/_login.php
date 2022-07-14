@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <!-- //! sending post request to another file, then redirecting website from there; -->
-            <form action="/secret/assets/_handlelogin.php" method="POST">
+            <form action="/secrethost/assets/_handlelogin.php" method="POST">
                     <div class="form-group">
                         <label for="email">Email address</label>
                         <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">

@@ -5,17 +5,20 @@ date_default_timezone_set('Asia/Kolkata');
 $loginE="undefine";
 $sign="undefine";
 $sent="undefine";
+$logout="undefine";
+$pass="undefine";
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
   include "assets/_dbconnect.php";
   $userid=$_POST['userid'];
   $message=$_POST['message'];
+  $date=date("F j, Y, g:i a");  
 
   //! To avoid hacking in website, as < this is now changed into &lt; no one can inject js code now.
   $message=str_replace("<","&lt;",$message);
   $message=str_replace(">","&gt;",$message);
 
-  $sql="INSERT INTO `message` ( `message`,`user_id`, `sent` ) VALUES ( '$message', '$userid' , current_timestamp())";
+  $sql="INSERT INTO `message` ( `message`,`user_id`, `sent` ) VALUES ( '$message', '$userid' , '$date')";
   $result=mysqli_query($conn,$sql);
 }
 
@@ -29,6 +32,10 @@ if(isset($_GET['signup'])){
 if(isset($_GET['sent'])){
     $sent=$_GET['sent'];
 }
+if(isset($_GET['logout'])){
+  $logout=$_GET['logout'];
+}
+
 
 ?>
 <!doctype html>
@@ -43,10 +50,11 @@ if(isset($_GET['sent'])){
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 
   <title>iSecret</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/secret/assets/favicon/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/secret/assets/favicon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/secret/assets/favicon/favicon-16x16.png">
-<link rel="manifest" href="/secret/assets/favicon/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://assets.dryicons.com/uploads/icon/svg/8859/cdf7ad61-0549-4442-a349-d17717288163.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="https://assets.dryicons.com/uploads/icon/svg/8859/cdf7ad61-0549-4442-a349-d17717288163.svg">
+<link rel="icon" type="image/png" sizes="16x16" href="https://assets.dryicons.com/uploads/icon/svg/8859/cdf7ad61-0549-4442-a349-d17717288163.svg">
+
+<link rel="stylesheet" href="assets/style.css">
 </head>
 
 <body>
@@ -75,7 +83,7 @@ if($loginE=="wemail"){
 }
 if($sign=="notmatch"){
     echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Error!</strong> Password did not match.
+    <strong>Error!</strong> Password did not match or password field is empty.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -91,7 +99,23 @@ if($sign=="exist"){
 }
 if($sign=="true"){
     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Success!</strong> You successfully created account to iSecret. You can login now.
+    <strong>Success!</strong> You successfully created account to iSecret. You can <span class="text-primary" type="button" data-toggle="modal" data-target="#loginmodal">login</span> now.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>';
+}
+if($logout=="true"){
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> You logout from iSecret successfully.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>';
+}
+if($loginE=="true"){
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> You log into your iSecret account successfully.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -115,17 +139,16 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
   <h4 class="alert-heading display-3">Congrats!</h4>
   <p>You successfully logged into iSecret!</p>
   <hr>
-  Share this website <a href="/secret/sent.php/?userid='.$userid.'" class="alert-link">"/secret/sent.php/?userid='.$userid.'"</a> to your friends and have fun!
+  Share this website <a href="/secrethost/sent.php/?userid='.$userid.'" class="alert-link">"/secrethost/sent.php/?userid='.$userid.'"</a> to your friends or visit to see the messages sent to you. Have Fun!!
 </div>';
 }
 
 //! giving user message how they can share link to others;
 else{
-    echo '
-<div class="jumbotron jumbotron-fluid">
+    echo '<div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4">You are not logged in!</h1>
-    <p class="lead">Sign in to create your own secret link or ask a friend to share their unique link to send message!</p>
+    <p class="lead font-weight-bolder"><span class="text-primary" data-toggle="modal" data-target="#signupmodal" type="button">Create an account</span> and <span class="text-primary" type="button" data-toggle="modal" data-target="#loginmodal">sign in</span> to send your own secret link or ask a friend to share their unique link to send message!</p>
   </div>
 </div>';
 }
@@ -138,6 +161,9 @@ else{
 
 
 </div>
+<?php 
+include "assets/_footer.php"
+?>
   <!-- Optional JavaScript; choose one of the two! -->
 
   <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->

@@ -5,16 +5,21 @@
 session_start();
 
 echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-<a class="navbar-brand" href="">iSecret</a>
+<a class="navbar-brand" href="#">iSecret</a>
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 <span class="navbar-toggler-icon"></span>
 </button>
 
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 <ul class="navbar-nav mr-auto">
-<li class="nav-item active">
-<a class="nav-link" href="">Home</a>
-</li>
+<li class="nav-item active">';
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']==true){
+  echo '<a class="nav-link" href="/secrethost/index.php/?userid='.$_GET['userid'].'">Home</a>';
+}
+else{
+echo '<a class="nav-link" href="/secrethost/">Home</a>';
+}
+echo '</li>
 </ul>';
 
 
@@ -22,7 +27,7 @@ echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
 if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']==true){
     echo '<p class="text-light my-0">Welcome <span class="font-weight-bold mr-3">'.$_SESSION['email'].'</span></p>
-    <a class="btn btn-success" href="/secret/assets/_logout.php">Logout</a>';
+    <a class="btn btn-success" href="/secrethost/assets/_logout.php">Logout</a>';
 
 }
 
