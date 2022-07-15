@@ -91,7 +91,7 @@ if($sign=="notmatch"){
 }
 if($sign=="exist"){
     echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Error!</strong> Email already exists. Try to sign in.
+    <strong>Error!</strong> Email already exists. Try to <span class="text-primary" type="button" data-toggle="modal" data-target="#loginmodal">sign in</span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
